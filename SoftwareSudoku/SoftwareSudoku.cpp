@@ -3,13 +3,21 @@
 
 #include "stdafx.h"
 #include "iostream"
+#include "fstream"
 
 using namespace std;
 
+void saveFile(char* fileName, char* content);
+
 int main()
 {
-	cout << "HelloWorld" << endl;
-
+	saveFile("sudoku.txt", "HelloWorld");
     return 0;
+}
+
+void saveFile(char* fileName,char* content) {
+	ofstream file(fileName);
+	file << content;
+	file.close();
 }
 
