@@ -9,11 +9,11 @@
 using namespace std;
 
 void initData();
-void dfs(int index);
+void switchNum();
+void find(int index);
 
-int n = 10000;
-int res[9][9] = { 0 }, hang[10][10] = { 0 }, lie[10][10] = { 0 }, block[10][10] = { 0 };
-int num[81];
+int n = 1000000;
+int sudoku[9][9] = { 0 }, rows[10][10] = { 0 }, cloumns[10][10] = { 0 }, blocks[10][10] = { 0 }, num[81];
 
 ofstream file;
 
@@ -21,8 +21,7 @@ ofstream file;
 int main()
 {
 	initData();
-	dfs(0);
-
+	find(0);
     return 0;
 }
 
@@ -40,7 +39,7 @@ void initData() {
 	}
 }
 
-void dfs(int index) {
+void find(int index) {
 	if (n <= 0){
 		if (n == 0) {
 			file.close();
@@ -49,57 +48,75 @@ void dfs(int index) {
 		return;
 	}
 	int count = 0;
-	
 	if (index == 81) {
-	
-		for (int i = 0; i < 9; i++)
+		switchNum();
+		/**for (int i = 0; i < 9; i++)
 		{
 			for (int j = 0; j < 9; j++)
 			{
-			
-				file << res[i][j] << " ";
+				file << sudoku[i][j] << " ";
 			}
-
+			file << endl;
 			
 		}
-		if (n>=2)
+		if (n >= 2)
 		{
 			file << endl;
-		}
-		
+		}**/
 		n--;
 		return;
 	}
 
 
 	int t = num[index];
-	for (int width = 0; width < 9; width++)
+	for (int row = 0; row < 9; row++)//从第一行开始往下扫描
 	{
-		if (!hang[t][width]) {
-			int b = width / 3;
-			for (int x = b*3; x < b*3+3; x++)
+		if (!rows[t][row]) {
+			int b = row / 3;
+			for (int block = b*3; block < b*3+3; block++)//每行会有3块九宫格可以扫描
 			{
-				if (!block[t][x])
+				if (!blocks[t][block])
 				{
-					int k = x % 3;
-					for (int y = k*3; y < (k + 1) * 3; y++)
+					int k = block % 3;
+					for (int cloumn = k*3; cloumn < (k + 1) * 3; cloumn++)//每行每块会有3列可以扫描
 					{
-						if (!lie[t][y]&&!res[width][y])
+						if (!cloumns[t][cloumn]&&!sudoku[row][cloumn])
 						{
-							block[t][x] = hang[t][width] = lie[t][y] = 1;
-							res[width][y] = t;
-							dfs(index + 1);
-							block[t][x] = hang[t][width] = lie[t][y] = 0;
-							res[width][y] = 0;
+							sudoku[row][cloumn] = t;
+							blocks[t][block]  = 1;
+							rows[t][row] = 1;
+							cloumns[t][cloumn] = 1;
+							find(index + 1);
+							blocks[t][block] =0;
+							rows[t][row] = 0;
+							cloumns[t][cloumn] = 0;
+							sudoku[row][cloumn] = 0;
 						}
 					}
 				}
-				
 			}
 			break;
 		}
 	}
 
+}
+
+int a = (4 + 4) % 9 + 1;
+
+void switchNum() {
+	int x = sudoku[0][0];
+	for (int i = 0; i < 9; i++)
+	{
+		for (int j = 0; j < 9; j++)
+		{
+			if (sudoku[i][j]==x)
+			{
+				sudoku[i][j] = a;
+			}else if(sudoku[i][j]==a){
+				sudoku[i][j] = x;
+			}
+		}
+	}
 }
 
 
