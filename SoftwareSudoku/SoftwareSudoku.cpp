@@ -8,41 +8,47 @@
 
 using namespace std;
 
-void initData();
-void switchNum();
-void find(int index);
 
 int n = 1000000;
+int a = (4 + 4) % 9 + 1;
 int sudoku[9][9] = { 0 }, rows[10][10] = { 0 }, cloumns[10][10] = { 0 }, blocks[10][10] = { 0 }, num[81];
 
-ofstream file;
-
-
-int main()
-{
-	initData();
-	find(0);
-    return 0;
-}
+FILE *fp;
 
 void initData() {
+	cin >> n ;
 	for (int i = 0; i < 9; i++)
 	{
 		for (int j = 0; j < 9; j++) {
 			num[i * 9 + j] = i + 1;
 		}
 	}
-	file.open("sudoku.txt");
-	if (!file)
+	fp = fopen("sudoku.txt", "w");
+}
+
+
+void switchNum() {
+	int x = sudoku[0][0];
+	for (int i = 0; i < 9; i++)
 	{
-		cout << "Open File　Error" << endl;
+		for (int j = 0; j < 9; j++)
+		{
+			if (sudoku[i][j] == x)
+			{
+				sudoku[i][j] = a;
+			}
+			else if (sudoku[i][j] == a) {
+				sudoku[i][j] = x;
+			}
+		}
 	}
 }
 
 void find(int index) {
 	if (n <= 0){
-		if (n == 0) {
-			file.close();
+		if (n==0)
+		{
+			fclose(fp);
 			n--;
 		}
 		return;
@@ -50,19 +56,26 @@ void find(int index) {
 	int count = 0;
 	if (index == 81) {
 		switchNum();
-		/**for (int i = 0; i < 9; i++)
+		for (int i = 0; i < 9; i++)
 		{
 			for (int j = 0; j < 9; j++)
 			{
-				file << sudoku[i][j] << " ";
+				//file << sudoku[i][j] ;
+				fprintf(fp,"%d",sudoku[i][j]);
+				if (j != 8) {
+					//file << " ";
+					fprintf(fp," ");
+				}
 			}
-			file << endl;
+			//file << endl;
+			fprintf(fp, "\n");
 			
 		}
 		if (n >= 2)
 		{
-			file << endl;
-		}**/
+			//file << endl;
+			fprintf(fp, "\n");
+		}
 		n--;
 		return;
 	}
@@ -101,23 +114,7 @@ void find(int index) {
 
 }
 
-int a = (4 + 4) % 9 + 1;
 
-void switchNum() {
-	int x = sudoku[0][0];
-	for (int i = 0; i < 9; i++)
-	{
-		for (int j = 0; j < 9; j++)
-		{
-			if (sudoku[i][j]==x)
-			{
-				sudoku[i][j] = a;
-			}else if(sudoku[i][j]==a){
-				sudoku[i][j] = x;
-			}
-		}
-	}
-}
 
 
 
